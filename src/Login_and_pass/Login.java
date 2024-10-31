@@ -3,22 +3,36 @@ package Login_and_pass;
 import java.util.Scanner;
 
 public class Login {
-    private static final String LOGIN_REGEX = "[\\da-zA-Z]";
-    private static final Integer LENGTH_OF_LOG = 20;
+    private final String LOGIN_REGEX = "[^\\da-zA-Z0-9]";
+    private final Integer LENGTH_OF_LOG = 20;
     Scanner scanner = new Scanner(System.in);
 
-    public String fillLogin(String login) {
+    Pass pass = new Pass();
+
+    public String fillLogin() {
+        System.out.println("Введите логин: ");
+        String inputLogin = scanner.nextLine();
+        checkLogin(inputLogin);
+        return inputLogin;
+    }
+
+    public String checkLogin(String login) {
         if (login.isBlank()) {
             System.out.println("Введите логин: ");
-            login = scanner.nextLine();
-        } else if (!login.replaceAll(LOGIN_REGEX, " ").trim().equals(login)) {
+            fillLogin();
+        } else if (login.replaceAll(LOGIN_REGEX, "").isBlank()) {
             System.out.println("Введите логин содержащий только буквы (АНГЛ) и цифры: ");
-            login = scanner.nextLine();
+            fillLogin();
         } else if (login.length() > LENGTH_OF_LOG) {
             System.out.println("Логин слишком длинный");
-            login = scanner.nextLine();
-        } else if (!Main.loginsAndPass.containsValue(login)) {
-            Main.loginsAndPass.put("",login);
+            fillLogin();
+        }
+        if (!Main.loginsAndPass.containsValue(login)) {
+            Main.loginsAndPass.put(pass.fillPass(), login);
+            pass.fillPass();
+            System.out.println("Аккаунт сохранён.");
+        } else {
+            pass.fillPass();
         }
         return login;
     }
